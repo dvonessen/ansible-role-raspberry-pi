@@ -1,0 +1,20 @@
+---
+galaxy_info:
+  author: your name
+  description: your role description
+  company: your company (optional)
+  license: MIT
+
+  min_ansible_version: 2.9
+
+  platforms:
+    - name: CentOS
+      versions:
+       - 8
+    - name: Debian
+      versions:
+        - 10
+
+  galaxy_tags: []
+
+dependencies: []
