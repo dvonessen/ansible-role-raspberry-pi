@@ -67,7 +67,6 @@
       copy:
         content: "{{ _cmdline | trim }}"
         dest: "{{ raspberry_pi_cmdline_txt }}"
-        backup: yes
         owner: root
         group: root
         mode: 0755
