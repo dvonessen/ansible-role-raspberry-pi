@@ -4,4 +4,4 @@
   remote_user: ansible
   debugger: on_failed
   roles:
-    - role: ansible-role-$ROLE_NAME
+    - role: ansible-role-raspberry-pi
