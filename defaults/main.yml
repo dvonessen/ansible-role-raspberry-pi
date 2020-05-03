@@ -1,3 +1,4 @@
 ---
 raspberry_pi_reboot: true
 raspberry_pi_blacklist_modules: []
+raspberry_pi_cmdline_options: {}

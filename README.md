@@ -14,10 +14,11 @@ For Wifi it's `wpa_supplicant` services and Bluetooth it's `hciuart`
 ## Role Variables
 
 
-| Name                             | Default | Description                                                                                                     |
-| :------------------------------- | :-----: | --------------------------------------------------------------------------------------------------------------- |
-| `raspberry_pi_reboot`            |  true   | Allows the role to reboot the system.                                                                           |
-| `raspberry_pi_blacklist_modules` |   []    | List of modules to Blacklist. e.g. Disable WiFi `[brcmfmac, brcmutil]` or disable Bluetooth `[btbcm, hci_uart]` |
+| Name                             | Default | Description                                                                                                                                                                                                        |
+| :------------------------------- | :-----: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `raspberry_pi_reboot`            |  true   | Allows the role to reboot the system.                                                                                                                                                                              |
+| `raspberry_pi_blacklist_modules` |   []    | List of modules to Blacklist. e.g. Disable WiFi `[brcmfmac, brcmutil]` or disable Bluetooth `[btbcm, hci_uart]`                                                                                                    |
+| `raspberry_pi_cmdline_options`   |   {}    | Dictionary to add configuration options to cmdline.txt. If only key without option add empty string. See example playbook. [Documentation](https://www.raspberrypi.org/documentation/configuration/cmdline-txt.md) |
 
 ## Role Tags
 
@@ -46,6 +47,9 @@ For Wifi it's `wpa_supplicant` services and Bluetooth it's `hciuart`
           - brcmutil  # disable WiFi
           - btbcm     # disable Bluetooth
           - hci_uart  # disable Bluetooth
+        raspberry_pi_cmdline_options:
+          consoleblank: 15
+          test: ""
 ```
 
 ## License

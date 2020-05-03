@@ -1,0 +1,28 @@
+---
+- name: Prepare
+  hosts: all
+  remote_user: ansible
+  debugger: on_failed
+  tasks:
+    - name: prepare cmdline.txt on ubuntu
+      block:
+        - name: create directory
+          file:
+            dest: /boot/firmware
+            state: directory
+            owner: root
+            group: root
+            mode: 0755
+
+        - name: create cmdline.txt
+          copy:
+            content: >
+              net.ifnames=0 dwc_otg.lpm_enable=0 consoleblank=15
+              console=serial0,115200 console=tty1 root=LABEL=writable
+              rootfstype=ext4 elevator=deadline rootwait fixrtc fsck.repair=yes
+            dest: /boot/firmware/cmdline.txt
+            owner: root
+            group: root
+            mode: 0755
+      become: true
+      when: ansible_distribution == "Ubuntu"

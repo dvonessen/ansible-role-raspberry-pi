@@ -5,3 +5,6 @@
   debugger: on_failed
   roles:
     - role: ansible-role-raspberry-pi
+      vars:
+        raspberry_pi_cmdline_options:
+          consoleblank: 10

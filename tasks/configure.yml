@@ -1,28 +1,74 @@
 ---
-- name: blacklist pi specific modules
-  template:
-    src: etc/modprobe.d/raspberry_pi_blacklist_modules.conf.j2
-    dest: /etc/modprobe.d/raspberry_pi_blacklist_modules.conf
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - reboot system
+- name: configure raspberry pi modules
+  block:
+    - name: blacklist pi specific modules
+      template:
+        src: etc/modprobe.d/raspberry_pi_blacklist_modules.conf.j2
+        dest: /etc/modprobe.d/raspberry_pi_blacklist_modules.conf
+        owner: root
+        group: root
+        mode: 0644
+      notify:
+        - reboot system
 
-- name: disable wpa_supplicant.service
-  systemd:
-    name: wpa_supplicant.service
-    state: stopped
-    enabled: no
-  when:
-    - '"wpa_supplicant.service" in ansible_facts.services'
-    - ('"brcmfmac" in raspberry_pi_blacklist_modules' or '"brcmutil" in raspberry_pi_blacklist_modules')
+    - name: disable wpa_supplicant.service
+      systemd:
+        name: wpa_supplicant.service
+        state: stopped
+        enabled: no
+      when:
+        - '"wpa_supplicant.service" in ansible_facts.services'
+        - ('"brcmfmac" in raspberry_pi_blacklist_modules' or '"brcmutil" in raspberry_pi_blacklist_modules')
 
-- name: disable hciuart.service
-  systemd:
-    name: hciuart.service
-    state: stopped
-    enabled: no
-  when:
-    - '"hciuart.service" in ansible_facts.services'
-    - ('"btbcm" in raspberry_pi_blacklist_modules' or '"hci_uart" in raspberry_pi_blacklist_modules')
+    - name: disable hciuart.service
+      systemd:
+        name: hciuart.service
+        state: stopped
+        enabled: no
+      when:
+        - '"hciuart.service" in ansible_facts.services'
+        - ('"btbcm" in raspberry_pi_blacklist_modules' or '"hci_uart" in raspberry_pi_blacklist_modules')
+
+- name: configure cmdline.txt options
+  block:
+    - name: read cmdline.txt content
+      command:
+        cmd: "cat {{ raspberry_pi_cmdline_txt }}"
+      register: _cmdline_file
+      changed_when: false
+
+    - name: convert cmdline.txt options to dict object
+      set_fact:
+        _cmdline_dict: |
+          {% set d={} -%}
+          {% for item in _cmdline_file.stdout.split(' ') -%}
+          {% set k = item.split('=', 1)[0] -%}
+          {% set v = "".join(item.split('=', 1)[1:]) -%}
+          {% set _ = d.update({k: v}) -%}
+          {% endfor -%}
+          {{ d }}
+
+    - name: combine cmdline.txt options with cmdline_options
+      set_fact:
+        _cmdline_comb: "{{ _cmdline_dict | combine(raspberry_pi_cmdline_options) }}"
+
+    - name: create new cmdline.txt options string
+      set_fact:
+        _cmdline: |
+          {% for k, v in _cmdline_comb.items() %}
+          {% if v | string | length > 0 %}
+           {{ k }}={{ v }}
+          {%- else %}
+           {{ k }}
+          {%- endif %}
+          {% endfor %}
+
+    - name: update cmdline.txt options
+      copy:
+        content: "{{ _cmdline | trim }}"
+        dest: "{{ raspberry_pi_cmdline_txt }}"
+        backup: yes
+        owner: root
+        group: root
+        mode: 0755
+  when: raspberry_pi_cmdline_txt is defined
