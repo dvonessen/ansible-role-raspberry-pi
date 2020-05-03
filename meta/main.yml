@@ -1,8 +1,7 @@
 ---
 galaxy_info:
-  author: your name
-  description: your role description
-  company: your company (optional)
+  author: Daniel von Essen
+  description: This role fine tunes [Raspberry Pi 4](https://www.raspberrypi.org/).
   license: MIT
 
   min_ansible_version: 2.9
@@ -14,6 +13,9 @@ galaxy_info:
     - name: Debian
       versions:
         - 10
+    - name: Ubuntu
+      versions:
+        - 20.04
 
   galaxy_tags: []
 

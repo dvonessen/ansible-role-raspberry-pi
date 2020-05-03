@@ -1,0 +1,28 @@
+---
+- name: blacklist pi specific modules
+  template:
+    src: etc/modprobe.d/raspberry_pi_blacklist_modules.conf.j2
+    dest: /etc/modprobe.d/raspberry_pi_blacklist_modules.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - reboot system
+
+- name: disable wpa_supplicant.service
+  systemd:
+    name: wpa_supplicant.service
+    state: stopped
+    enabled: no
+  when:
+    - '"wpa_supplicant.service" in ansible_facts.services'
+    - ('"brcmfmac" in raspberry_pi_blacklist_modules' or '"brcmutil" in raspberry_pi_blacklist_modules')
+
+- name: disable hciuart.service
+  systemd:
+    name: hciuart.service
+    state: stopped
+    enabled: no
+  when:
+    - '"hciuart.service" in ansible_facts.services'
+    - ('"btbcm" in raspberry_pi_blacklist_modules' or '"hci_uart" in raspberry_pi_blacklist_modules')

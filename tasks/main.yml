@@ -1,1 +1,28 @@
 ---
+- name: include os dependent variables
+  include_vars: "{{ item }}"
+  loop: "{{ q('first_found', vars_files) }}"
+  vars:
+    vars_files:
+      files:
+        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_os_family | lower }}{{ ansible_distribution_major_version }}.yml"
+        - main.yml
+      paths:
+        - vars/
+      skip: true
+  tags:
+    - always
+
+- name: import preflight.yml
+  import_tasks: preflight.yml
+  tags:
+    - raspberry_pi_all
+    - raspberry_pi_preflight
+
+- name: import configure.yml
+  import_tasks: configure.yml
+  become: true
+  tags:
+    - raspberry_pi_all
+    - raspberry_pi_configure

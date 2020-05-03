@@ -1,0 +1,5 @@
+---
+- name: reboot system
+  reboot:
+  become: true
+  when: raspberry_pi_reboot | bool

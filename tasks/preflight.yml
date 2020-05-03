@@ -1,0 +1,4 @@
+---
+- name: gather services facts
+  service_facts:
+  become: true
