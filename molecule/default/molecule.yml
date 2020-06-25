@@ -1,29 +1,29 @@
----
 dependency:
   name: galaxy
 driver:
-  name: vagrant
-  provider:
-    name: virtualbox
+  name: docker
 platforms:
   - name: raspberrypicentos8
-    box: centos/8
-    box_version: 1905.1
-    memory: 2048
-    cpus: 2
-    provision: true
+    image: registry.gitlab.com/dvonessen/docker-molecule-nonroot/centos:8-systemd
+    pre_build_image: true
+    privileged: true
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    command: "/usr/lib/systemd/systemd"
   - name: raspberrypidebian10
-    box: debian/buster64
-    box_version: 10.3.0
-    memory: 2048
-    cpus: 2
-    provision: true
+    image: registry.gitlab.com/dvonessen/docker-molecule-nonroot/debian:10-systemd
+    pre_build_image: true
+    privileged: true
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    command: "/lib/systemd/systemd"
   - name: raspberrypiubuntu2004
-    box: ubuntu/focal64
-    box_version: 20200430.1.0
-    memory: 2048
-    cpus: 2
-    provision: true
+    image: registry.gitlab.com/dvonessen/docker-molecule-nonroot/ubuntu:20.04-systemd
+    pre_build_image: true
+    privileged: true
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    command: "/lib/systemd/systemd"
 provisioner:
   name: ansible
   config_options:
