@@ -1,6 +1,14 @@
 ---
 - name: configure raspberry pi modules
   block:
+    - name: ensure /etc/modprobe.d exists
+      file:
+        path: /etc/modprobe.d
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+
     - name: blacklist pi specific modules
       template:
         src: etc/modprobe.d/raspberry_pi_blacklist_modules.conf.j2

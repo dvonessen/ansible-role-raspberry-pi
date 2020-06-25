@@ -1,4 +1,5 @@
 ---
+raspberry_pi_cmdline_txt: /boot/firmware/cmdline.txt
 raspberry_pi_reboot: true
 raspberry_pi_blacklist_modules: []
 raspberry_pi_cmdline_options: {}
