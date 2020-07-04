@@ -13,7 +13,9 @@
         - vars/
       skip: true
   tags:
-    - always
+    - raspberry_pi_all
+    - raspberry_pi_preflight
+    - raspberry_pi_configure
 
 - name: import preflight.yml
   import_tasks: preflight.yml
